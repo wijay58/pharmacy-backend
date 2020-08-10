@@ -3,13 +3,16 @@ const Schema = mongoose.Schema;
 
 let SupplierSchema = new Schema({
     email: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     phone: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     name: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     amount_to_be_paid: {
         type: mongoose.Schema.Types.String
