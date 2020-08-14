@@ -2,26 +2,33 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let CustomerSchema = new Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId
-    },
     email: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        unique: true
     },
     phone: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true,
+        unique: true
     },
     password: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
-    name: {
-        type: mongoose.Schema.Types.String
+    firstname: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
+    lastname: {
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     type: {
         type: mongoose.Schema.Types.String
     },
     loyalty_points: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.Number,
+        default: 0
     }
 }, {
     timestamps: true

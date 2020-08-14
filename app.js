@@ -11,6 +11,7 @@ const supplierRouter = require('./routes/supplier_route');
 const unitRouter = require('./routes/unit_route');
 const categoryRouter = require('./routes/category_route');
 const medicineRouter = require('./routes/medicine_route');
+const customerRouter = require('./routes/customer_route');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use('/supplier', supplierRouter);
 app.use('/unit', unitRouter);
 app.use('/category', categoryRouter);
 app.use('/medicine', medicineRouter);
+app.use('/customer', customerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

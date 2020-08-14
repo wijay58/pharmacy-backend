@@ -4,11 +4,13 @@ const Schema = mongoose.Schema;
 let SupplierSchema = new Schema({
     email: {
         type: mongoose.Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     phone: {
         type: mongoose.Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     name: {
         type: mongoose.Schema.Types.String,
