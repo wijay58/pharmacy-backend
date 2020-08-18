@@ -26,7 +26,7 @@ exports.purchase_post = async function (req, res) {
 
     purchase.save(function (err, thePurchase) {
         if (err) {
-            res.status(500).json({
+            return res.status(500).json({
                 error: err.message
             });
         } else {
@@ -39,9 +39,9 @@ exports.purchase_post = async function (req, res) {
 };
 
 exports.purchase_get = function (req, res) {
-    Purchase.find({}, function (err, purchase) {
+    Purchase.find({}).populate('supplier', 'name').exec( function (err, purchase) {
         if (err) return res.send(err.message);
-        res.send(purchase);
+        else res.send(purchase);
     })
 };
 
@@ -57,6 +57,6 @@ exports.purchase_update = function (req, res) {
         $set: req.body
     }, function (err, purchase) {
         if (err) return res.send(err.message);
-        res.send(purchase);
+        else res.send(purchase);
     });
 };
