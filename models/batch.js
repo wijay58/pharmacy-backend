@@ -2,19 +2,13 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let BatchSchema = new Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId
-    },
-    bill_number: {
-        type: mongoose.Schema.Types.String
+    purchase: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Purchase',
+        required: true
     },
     name: {
         type: mongoose.Schema.Types.String
-    },
-    supplier: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
     },
     expiry_date: {
         type: mongoose.Schema.Types.Date

@@ -21,7 +21,7 @@ exports.purchase_post = async function (req, res) {
         bill_number: req.body.bill_number,
         total: req.body.total,
         paid_amount: req.body.paid_amount,
-        is_due: req.body.is_due,
+        is_due: req.body.is_paid,
     });
 
     purchase.save(function (err, thePurchase) {
@@ -52,20 +52,7 @@ exports.purchase_delete = function (req, res) {
     })
 };
 
-exports.purchase_update = async function (req, res) {
-    let supplierId;
-    await Supplier.findOne({
-        name: req.body.supplier
-    }, function (err, supplier) {
-        if(err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            supplierId = supplier._doc._id
-        }
-    });
-    req.body.supplier = supplierId;
+exports.purchase_update = function (req, res) {
     Purchase.findByIdAndUpdate(req.params.id, {
         $set: req.body
     }, function (err, purchase) {
