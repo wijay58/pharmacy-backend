@@ -7,8 +7,10 @@ let BatchSchema = new Schema({
         ref: 'Purchase',
         required: true
     },
-    name: {
-        type: mongoose.Schema.Types.String
+    medicine: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Medicine',
+        required: true
     },
     expiry_date: {
         type: mongoose.Schema.Types.Date
