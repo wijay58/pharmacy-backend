@@ -5,12 +5,12 @@ exports.sales_post = async function (req, res) {
     let customerId;
     let firstname = req.body.customer.split(' ')[0]
     let lastname = req.body.customer.split(' ')[1]
-    if(firstname) {
+    if (firstname) {
         await Customer.findOne({
             firstname: firstname,
             lastname: lastname
         }, function (err, customer) {
-            if(err) {
+            if (err) {
                 res.status(500).json({
                     error: err.message
                 });
@@ -33,8 +33,14 @@ exports.sales_post = async function (req, res) {
         } else {
             res.status(200).json({
                 message: 'Sale created successfully',
-                purchase: theSale
+                sale: theSale
             });
         }
+    })
+};
+exports.sales_get = function (req, res) {
+    Sales.find({}).populate({path:'customer',select:['firstname','lastname']}).exec( function (err, sales) {
+        if (err) return res.send(err.message);
+        else res.send(sales);
     })
 };

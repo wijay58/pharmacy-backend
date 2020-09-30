@@ -21,7 +21,7 @@ let RecieptSchema = new Schema({
         required: true
     },
     items: {
-        type: mongoose.Schema.Types.Array,
+        type: Array,
         required: true
     }
 }, {
