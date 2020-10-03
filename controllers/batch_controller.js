@@ -67,6 +67,45 @@ exports.batch_get = function (req, res) {
         })
 };
 
+exports.batch_search = async function (req, res) {
+    let array = [];
+    let query = req.params.searchText ? req.params.searchText : "";
+    console.log(query)
+    await Medicine.find({
+        'name': new RegExp(query, 'i')
+    }, async (err, medicine) => {
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        } else {
+            const promises = medicine.map(async item => {
+                await Batch.find({ medicine: item._id }).populate({
+                    path: 'purchase',
+                    select: ['supplier', 'bill_number'],
+                    populate: {
+                        path: 'supplier',
+                        select: 'name'
+                    }
+                })
+                    .populate({ path: 'medicine', populate: { path: 'category' } })
+                    .populate({ path: 'medicine', populate: { path: 'unit' } })
+                    .exec(function (err, batch) {
+                        if (err)
+                            return res.send(err.message);
+                        else {
+                            array.push(batch);
+                        }
+                    });
+                });
+                
+            await Promise.all(promises);
+            console.log(array);
+        }
+    });
+    return res.send(array);
+};
+
 
 exports.batch_delete = function (req, res) {
     Batch.findByIdAndRemove(req.params.id, function (err) {

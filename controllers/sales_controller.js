@@ -1,5 +1,6 @@
 let Sales = require("../models/sales");
 let Customer = require("../models/customer");
+let Batch = require("../models/batch");
 
 exports.sales_post = async function (req, res) {
     let customerId;
@@ -23,6 +24,19 @@ exports.sales_post = async function (req, res) {
         customer: customerId,
         items: req.body.items,
         total: req.body.total
+    });
+    
+    req.body.items.forEach(item => {
+        let qty = item.Remainingqty - item.qty
+        Batch.findByIdAndUpdate(item.id, { remaining_quantity: qty }, function(err,batch){
+            if (err) {
+                res.status(500).json({
+                    error: err.message
+                });
+            } else {
+                console.log(batch);
+            }
+        })   
     });
 
     sales.save(function (err, theSale) {

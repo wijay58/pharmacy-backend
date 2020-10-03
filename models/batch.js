@@ -27,5 +27,4 @@ let BatchSchema = new Schema({
 }, {
     timestamps: true
 })
-
 module.exports = mongoose.model('Batch', BatchSchema);
