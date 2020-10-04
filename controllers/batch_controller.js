@@ -52,15 +52,25 @@ exports.batch_post = async function (req, res) {
 
 exports.batch_get = function (req, res) {
     Batch.find({}).populate({
-        path: 'purchase',
-        select: ['supplier', 'bill_number'],
-        populate: {
-            path: 'supplier',
-            select: 'name'
-        }
-    })
-        .populate({ path: 'medicine', populate: { path: 'category' } })
-        .populate({ path: 'medicine', populate: { path: 'unit' } })
+            path: 'purchase',
+            select: ['supplier', 'bill_number'],
+            populate: {
+                path: 'supplier',
+                select: 'name'
+            }
+        })
+        .populate({
+            path: 'medicine',
+            populate: {
+                path: 'category'
+            }
+        })
+        .populate({
+            path: 'medicine',
+            populate: {
+                path: 'unit'
+            }
+        })
         .exec(function (err, batch) {
             if (err) return res.send(err.message);
             else res.send(batch);
@@ -68,7 +78,7 @@ exports.batch_get = function (req, res) {
 };
 
 exports.batch_search = async function (req, res) {
-    let array = [];
+    let med = []
     let query = req.params.searchText ? req.params.searchText : "";
     console.log(query)
     await Medicine.find({
@@ -79,8 +89,12 @@ exports.batch_search = async function (req, res) {
                 error: err.message
             });
         } else {
-            const promises = medicine.map(async item => {
-                await Batch.find({ medicine: item._id }).populate({
+            med = medicine
+            Batch.find({
+                    medicine: {
+                        $in: med
+                    }
+                }).populate({
                     path: 'purchase',
                     select: ['supplier', 'bill_number'],
                     populate: {
@@ -88,22 +102,27 @@ exports.batch_search = async function (req, res) {
                         select: 'name'
                     }
                 })
-                    .populate({ path: 'medicine', populate: { path: 'category' } })
-                    .populate({ path: 'medicine', populate: { path: 'unit' } })
-                    .exec(function (err, batch) {
-                        if (err)
-                            return res.send(err.message);
-                        else {
-                            array.push(batch);
-                        }
-                    });
+                .populate({
+                    path: 'medicine',
+                    populate: {
+                        path: 'category'
+                    }
+                })
+                .populate({
+                    path: 'medicine',
+                    populate: {
+                        path: 'unit'
+                    }
+                })
+                .exec(function (err, batch) {
+                    if (err)
+                        return res.send(err.message);
+                    else {
+                        return res.send(batch)
+                    }
                 });
-                
-            await Promise.all(promises);
-            console.log(array);
         }
     });
-    return res.send(array);
 };
 
 
