@@ -22,7 +22,7 @@ let BatchSchema = new Schema({
         type: mongoose.Schema.Types.String
     },
     remaining_quantity: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.Number
     }
 }, {
     timestamps: true

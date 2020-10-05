@@ -80,7 +80,6 @@ exports.batch_get = function (req, res) {
 exports.batch_search = async function (req, res) {
     let med = []
     let query = req.params.searchText ? req.params.searchText : "";
-    console.log(query)
     await Medicine.find({
         'name': new RegExp(query, 'i')
     }, async (err, medicine) => {

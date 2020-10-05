@@ -35,7 +35,6 @@ exports.customer_get = function (req, res) {
             customer.forEach(item => {
                 item._doc.name = item.firstname + " " + item.lastname;
             });
-            console.log(customer)
             res.send(customer)
         }
     })
