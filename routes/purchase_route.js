@@ -4,6 +4,7 @@ const purchase_controller = require('../controllers/purchase_controller.js');
 
 router.post('/post', purchase_controller.purchase_post);
 router.get('/get', purchase_controller.purchase_get);
+router.get('/getToday', purchase_controller.purchase_getToday);
 router.delete('/:id', purchase_controller.purchase_delete);
 router.put('/:id', purchase_controller.purchase_update);
 

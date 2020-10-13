@@ -6,7 +6,7 @@ exports.purchase_post = async function (req, res) {
     await Supplier.findOne({
         name: req.body.supplier
     }, function (err, supplier) {
-        if(err) {
+        if (err) {
             res.status(500).json({
                 error: err.message
             });
@@ -39,7 +39,18 @@ exports.purchase_post = async function (req, res) {
 };
 
 exports.purchase_get = function (req, res) {
-    Purchase.find({}).populate('supplier', 'name').exec( function (err, purchase) {
+    Purchase.find({}).populate('supplier', 'name').exec(function (err, purchase) {
+        if (err) return res.send(err.message);
+        else res.send(purchase);
+    })
+};
+
+exports.purchase_getToday = function (req, res) {
+    var start = new Date();
+    start.setHours(0, 0, 0, 0);
+    var end = new Date();
+    end.setHours(23, 59, 59, 999);
+    Purchase.find({ created_on: {$gte: start, $lt: end} }).populate('supplier', 'name').exec(function (err, purchase) {
         if (err) return res.send(err.message);
         else res.send(purchase);
     })
