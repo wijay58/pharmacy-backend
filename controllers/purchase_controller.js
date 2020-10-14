@@ -46,11 +46,10 @@ exports.purchase_get = function (req, res) {
 };
 
 exports.purchase_getToday = function (req, res) {
-    var start = new Date();
-    start.setHours(0, 0, 0, 0);
-    var end = new Date();
-    end.setHours(23, 59, 59, 999);
-    Purchase.find({ created_on: {$gte: start, $lt: end} }).populate('supplier', 'name').exec(function (err, purchase) {
+    var d = new Date();
+    month = d.getMonth();
+    year = d.getFullYear();
+    Purchase.find({ createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }}).populate('supplier', 'name').exec(function (err, purchase) {
         if (err) return res.send(err.message);
         else res.send(purchase);
     })

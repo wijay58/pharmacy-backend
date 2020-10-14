@@ -20,12 +20,6 @@ let PurchaseSchema = new Schema({
     },
     total: {
         type: mongoose.Schema.Types.Number
-    },
-    paid_amount: {
-        type: mongoose.Schema.Types.Number
-    },
-    is_due: {
-        type: mongoose.Schema.Types.Boolean
     }
 }, {
     timestamps: true

@@ -58,3 +58,14 @@ exports.sales_get = function (req, res) {
         else res.send(sales);
     })
 };
+
+exports.sales_getToday = function (req, res) {
+    var start = new Date();
+    start.setHours(0, 0, 0, 0);
+    var end = new Date();
+    end.setHours(23, 59, 59, 999);
+    Sales.find({ createdAt: {$gte: start, $lt: end} }).populate({path:'customer',select:['firstname','lastname']}).exec(function (err, sale) {
+        if (err) return res.send(err.message);
+        else res.send(sale);
+    })
+};
