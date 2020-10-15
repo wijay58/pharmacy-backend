@@ -69,3 +69,13 @@ exports.sales_getToday = function (req, res) {
         else res.send(sale);
     })
 };
+
+exports.sales_getMonth = function (req, res) {
+    var d = new Date();
+    month = d.getMonth();
+    year = d.getFullYear();
+    Sales.find({ createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }}).populate({path:'customer',select:['firstname','lastname']}).exec(function (err, sale) {
+        if (err) return res.send(err.message);
+        else res.send(sale);
+    })
+};
