@@ -17,7 +17,7 @@ let RecieptSchema = new Schema({
         ref: 'Customer'
     },
     total: {
-        type: mongoose.Schema.Types.String,
+        type: mongoose.Schema.Types.Number,
         required: true
     },
     items: {

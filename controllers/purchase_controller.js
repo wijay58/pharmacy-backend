@@ -49,10 +49,26 @@ exports.purchase_getToday = function (req, res) {
     var d = new Date();
     month = d.getMonth();
     year = d.getFullYear();
-    Purchase.find({ createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }}).populate('supplier', 'name').exec(function (err, purchase) {
-        if (err) return res.send(err.message);
-        else res.send(purchase);
-    })
+    Purchase.aggregate(
+        [
+            { $match: { createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }} },
+            {
+                $group: {
+                    _id: {$month :"$date"},
+                    total: {$sum: "$total"}
+                }
+            },
+            {$sort: {"date": 1} }
+        ],
+
+        function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(result);
+            }
+        }
+    );
 };
 
 exports.purchase_delete = function (req, res) {

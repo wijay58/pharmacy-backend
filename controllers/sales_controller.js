@@ -74,8 +74,24 @@ exports.sales_getMonth = function (req, res) {
     var d = new Date();
     month = d.getMonth();
     year = d.getFullYear();
-    Sales.find({ createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }}).populate({path:'customer',select:['firstname','lastname']}).exec(function (err, sale) {
-        if (err) return res.send(err.message);
-        else res.send(sale);
-    })
+    Sales.aggregate(
+        [
+            { $match: { createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }} },
+            {
+                $group: {
+                    _id: {$month :"$date"},
+                    total: {$sum: "$total"}
+                }
+            },
+            {$sort: {"_id": 1} }
+        ],
+
+        function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(result);
+            }
+        }
+    );
 };
