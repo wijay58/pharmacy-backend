@@ -33,8 +33,6 @@ exports.sales_post = async function (req, res) {
                 res.status(500).json({
                     error: err.message
                 });
-            } else {
-                console.log(batch);
             }
         })   
     });
