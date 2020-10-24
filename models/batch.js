@@ -23,6 +23,12 @@ let BatchSchema = new Schema({
     },
     remaining_quantity: {
         type: mongoose.Schema.Types.Number
+    },
+    initial_quantity: {
+        type: mongoose.Schema.Types.Number
+    },
+    storage: {
+        type: mongoose.Schema.Types.String
     }
 }, {
     timestamps: true

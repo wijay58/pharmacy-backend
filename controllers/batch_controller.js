@@ -5,6 +5,8 @@ let Medicine = require("../models/medicine");
 exports.batch_post = async function (req, res) {
     let purchaseId;
     let medicineId;
+    let sum = 0;
+    let PurchasePrice;
     await Purchase.findOne({
         bill_number: req.body.bill_number
     }, function (err, purchase) {
@@ -13,7 +15,8 @@ exports.batch_post = async function (req, res) {
                 error: err.message
             });
         } else {
-            purchaseId = purchase._doc._id
+            purchaseId = purchase._doc._id;
+            PurchasePrice = purchase._doc.total;
         }
     });
     await Medicine.findOne({
@@ -27,6 +30,26 @@ exports.batch_post = async function (req, res) {
             medicineId = medicine._doc._id
         }
     });
+    await Batch.find({
+        purchase: purchaseId
+    }, function (err, batch) {
+        if (err) {
+            res.status(500).json({
+                error: err.message
+            });
+        } else {
+            batch.forEach(element => {
+                let thisSum = element._doc.initial_quantity * parseFloat(element._doc.bought_price)
+                sum += thisSum
+            });
+            sum += parseInt(req.body.remaining_quantity)* parseFloat(req.body.bought_price)
+        }
+    });
+    if(PurchasePrice<sum) {
+        return res.status(500).json({
+            error: "Prices Dont Match"
+        });
+    }
     let batch = new Batch({
         medicine: medicineId,
         purchase: purchaseId,
@@ -34,6 +57,8 @@ exports.batch_post = async function (req, res) {
         bought_price: req.body.bought_price,
         selling_price: req.body.selling_price,
         remaining_quantity: req.body.remaining_quantity,
+        storage: req.body.storage,
+        initial_quantity: req.body.remaining_quantity
     });
 
     batch.save(function (err, theBatch) {
