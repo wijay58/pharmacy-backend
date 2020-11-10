@@ -1,25 +1,7 @@
 let Sales = require("../models/sales");
-let Customer = require("../models/customer");
 let Batch = require("../models/batch");
 
 exports.sales_post = async function (req, res) {
-    let customerId;
-    let firstname = req.body.customer.split(' ')[0]
-    let lastname = req.body.customer.split(' ')[1]
-    if (firstname) {
-        await Customer.findOne({
-            firstname: firstname,
-            lastname: lastname
-        }, function (err, customer) {
-            if (err) {
-                res.status(500).json({
-                    error: err.message
-                });
-            } else {
-                customerId = customer._doc._id
-            }
-        });
-    }
     let sales = new Sales({
         customer: customerId,
         items: req.body.items,

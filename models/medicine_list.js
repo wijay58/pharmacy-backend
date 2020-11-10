@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
+
 const Schema = mongoose.Schema;
 
 let MedicineListSchema = new Schema({
@@ -13,8 +15,8 @@ let MedicineListSchema = new Schema({
         ref: 'Customer',
         required: true
     },
-    not_available: {
-        type: mongoose.Schema.Types.Array
+    online_order_number: {
+        type: mongoose.Schema.Types.Number
     },
     //store only the url of the image
     prescription: {
@@ -30,4 +32,5 @@ let MedicineListSchema = new Schema({
     timestamps: true
 })
 
+MedicineListSchema.plugin(autoIncrement.plugin, { model: 'MedicineList', field: 'online_order_number' });
 module.exports = mongoose.model('MedicineList', MedicineListSchema);

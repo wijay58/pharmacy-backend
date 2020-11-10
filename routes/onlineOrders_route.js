@@ -5,5 +5,6 @@ const onlineOrders_controller = require('../controllers/onlineOrders_controller.
 router.get('/get', onlineOrders_controller.onlineOrders_get);
 router.post('/post', onlineOrders_controller.onlineOrders_post);
 router.delete('/:id', onlineOrders_controller.onlineOrders_delete);
+router.put('/cashier/:id', onlineOrders_controller.onlineOrders_cashier_update);
 
 module.exports = router;
