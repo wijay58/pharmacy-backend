@@ -47,7 +47,7 @@ exports.purchase_get = function (req, res) {
 
 exports.purchase_getToday = function (req, res) {
     var d = new Date();
-    month = d.getMonth();
+    month = d.getMonth()+1;
     year = d.getFullYear();
     Purchase.aggregate(
         [

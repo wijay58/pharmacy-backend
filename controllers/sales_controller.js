@@ -1,9 +1,9 @@
 let Sales = require("../models/sales");
 let Batch = require("../models/batch");
+let MedicineList = require("../models/medicine_list");
 
-exports.sales_post = async function (req, res) {
+exports.sales_post_normal = async function (req, res) {
     let sales = new Sales({
-        customer: customerId,
         items: req.body.items,
         total: req.body.total
     });
@@ -17,6 +17,33 @@ exports.sales_post = async function (req, res) {
                 });
             }
         })   
+    });
+
+    sales.save(function (err, theSale) {
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        } else {
+            res.status(200).json({
+                message: 'Sale created successfully',
+                sale: theSale
+            });
+        }
+    })
+};
+exports.sales_post_online_success = async function (req, res) {
+    let sales = new Sales({
+        customer: req.body.customerId,
+        items: req.body.items,
+        total: req.body.total
+    });
+
+    await MedicineList.findByIdAndUpdate(req.body._id, {
+        stage: "3"
+    }, function (err, medicineList) {
+        if (err) console.log(err.message);
+        else console.log(medicineList);
     });
 
     sales.save(function (err, theSale) {
@@ -52,7 +79,7 @@ exports.sales_getToday = function (req, res) {
 
 exports.sales_getMonth = function (req, res) {
     var d = new Date();
-    month = d.getMonth();
+    month = d.getMonth()+1;
     year = d.getFullYear();
     Sales.aggregate(
         [

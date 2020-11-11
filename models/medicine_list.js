@@ -25,7 +25,7 @@ let MedicineListSchema = new Schema({
     },
     stage: {
         type: mongoose.Schema.Types.String,
-        default:"1", //1-customerSent 2-reserved 3-paid
+        default:"1", //1-customerSent 2-reserved 3-paid 
         required: true
     }
 }, {
