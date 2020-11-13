@@ -79,7 +79,7 @@ exports.sales_getToday = function (req, res) {
 
 exports.sales_getMonth = function (req, res) {
     var d = new Date();
-    month = d.getMonth()+1;
+    month = d.getMonth();
     year = d.getFullYear();
     Sales.aggregate(
         [

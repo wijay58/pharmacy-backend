@@ -45,9 +45,9 @@ exports.purchase_get = function (req, res) {
     })
 };
 
-exports.purchase_getToday = function (req, res) {
+exports.purchase_getMonth = function (req, res) {
     var d = new Date();
-    month = d.getMonth()+1;
+    month = d.getMonth();
     year = d.getFullYear();
     Purchase.aggregate(
         [
@@ -58,7 +58,7 @@ exports.purchase_getToday = function (req, res) {
                     total: {$sum: "$total"}
                 }
             },
-            {$sort: {"date": 1} }
+            {$sort: {"_id": 1} }
         ],
 
         function (err, result) {
