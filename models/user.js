@@ -2,9 +2,6 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId
-    },
     email: {
         type: mongoose.Schema.Types.String
     },
@@ -23,11 +20,19 @@ let UserSchema = new Schema({
     dob: {
         type: mongoose.Schema.Types.Date
     },
-    name: {
+    firstname: {
+        type: mongoose.Schema.Types.String
+    },
+    lastname: {
         type: mongoose.Schema.Types.String
     },
     address: {
         type: mongoose.Schema.Types.String
+    },
+    user_type: {
+        type: mongoose.Schema.Types.Number,
+        default: 0
+        // 0=employee 1=admin
     },
 }, {
     timestamps: true
