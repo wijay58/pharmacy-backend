@@ -86,3 +86,28 @@ exports.purchase_update = function (req, res) {
         else res.send(purchase);
     });
 };
+
+exports.purchase_getMonthlyReport = function (req, res) {
+    let year = req.body.Year;
+    let month = req.body.Month;
+    Purchase.aggregate(
+        [
+            { $match: { createdAt: {$lt: new Date(), $gt: new Date(year+','+month) }} },
+            {
+                $group: {
+                    _id: {$month :"$date"},
+                    total: {$sum: "$total"}
+                }
+            },
+            {$sort: {"_id": 1} }
+        ],
+
+        function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(result);
+            }
+        }
+    );
+};
