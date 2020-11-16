@@ -1,4 +1,5 @@
 let User = require("../models/user");
+var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 
 exports.user_post = async function (req, res) {
@@ -56,5 +57,34 @@ exports.user_update = async function (req, res) {
     }, function (err, user) {
         if (err) return res.send(err.message);
         return res.send(user);
+    });
+};
+
+exports.user_login = async function (req, res) {
+    await User.findOne({
+        email: req.body.email
+    }, async function (err, user) {
+        if (!user) return res.status(404).send('No user found.');
+        try {
+            if (await bcrypt.compare(req.body.password, user.password)) {
+                let token = jwt.sign({
+                    id: user.id
+                }, process.env.SECRET, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                
+                res.status(200).send({
+                    auth: true,
+                    token: token,
+                    user: user
+                });
+            } else {
+                return res.status(401).send(
+                    "Email or password is wrong."
+                );
+            }
+        } catch(err) {
+            res.status(500).send('Could not login')
+        }
     });
 };
