@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const checkAuth = require('../checkAuth.js');
 const onlineOrders_controller = require('../controllers/onlineOrders_controller.js');
 
-router.get('/get', onlineOrders_controller.onlineOrders_get);
-router.post('/post', onlineOrders_controller.onlineOrders_post);
-router.delete('/:id', onlineOrders_controller.onlineOrders_delete);
-router.put('/cashier/:id', onlineOrders_controller.onlineOrders_cashier_update);
+router.get('/get', checkAuth,onlineOrders_controller.onlineOrders_get);
+router.post('/post', checkAuth,onlineOrders_controller.onlineOrders_post);
+router.delete('/:id', checkAuth,onlineOrders_controller.onlineOrders_delete);
+router.put('/cashier/:id', checkAuth,onlineOrders_controller.onlineOrders_cashier_update);
 
 module.exports = router;
