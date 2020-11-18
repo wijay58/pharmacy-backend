@@ -68,7 +68,8 @@ exports.user_login = async function (req, res) {
         try {
             if (await bcrypt.compare(req.body.password, user.password)) {
                 let token = jwt.sign({
-                    id: user.id
+                    id: user.id,
+                    user_type: user.user_type
                 }, process.env.SECRET, {
                     expiresIn: 86400 // expires in 24 hours
                 });

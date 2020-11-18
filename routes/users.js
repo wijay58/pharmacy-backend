@@ -10,7 +10,7 @@ router.get('/checkauth/:token', function(req,res){
     try {
         let decoded = jwt.verify(req.params.token, process.env.SECRET);
         req.userData = decoded;
-        return res.status(200).send("Auth Successful.")
+        return res.status(200).json({user:decoded,message:"Auth Successful."})
     } catch (err) {
         return res.status(401).send({message: 'Auth Failed.Please Sign in again to continue.'});
     }
