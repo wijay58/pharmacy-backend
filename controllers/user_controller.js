@@ -5,14 +5,15 @@ var bcrypt = require('bcryptjs');
 exports.user_post = async function (req, res) {
     let hashedPassword = await bcrypt.hash(req.body.password, 10);
     let user = new User({
-        firstname: req.body.fname,
-        lastname: req.body.lname,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
         dob: req.body.dob,
         address: req.body.address,
         joined_date: req.body.joined_date,
         user_type: req.body.user_type,
+        nic: req.body.nic,
         password: hashedPassword
     });
     user.save(function (err, theUser) {
@@ -77,6 +78,7 @@ exports.user_login = async function (req, res) {
                 res.status(200).send({
                     auth: true,
                     token: token,
+                    user_type: user.user_type,
                     user: user
                 });
             } else {

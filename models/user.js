@@ -8,6 +8,10 @@ let UserSchema = new Schema({
     phone: {
         type: mongoose.Schema.Types.String
     },
+    nic: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
     password: {
         type: mongoose.Schema.Types.String
     },

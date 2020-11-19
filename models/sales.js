@@ -12,6 +12,10 @@ let RecieptSchema = new Schema({
         default: Date.now(),
         required: true
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     customer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Customer'

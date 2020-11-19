@@ -5,7 +5,8 @@ let MedicineList = require("../models/medicine_list");
 exports.sales_post_normal = async function (req, res) {
     let sales = new Sales({
         items: req.body.items,
-        total: req.body.total
+        total: req.body.total,
+        user: req.body.user,
     });
     
     req.body.items.forEach(item => {
@@ -60,9 +61,14 @@ exports.sales_post_online_success = async function (req, res) {
     })
 };
 exports.sales_get = function (req, res) {
-    Sales.find({}).populate({path:'customer',select:['firstname','lastname']}).exec( function (err, sales) {
+    Sales.find({}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec( function (err, sales) {
         if (err) return res.send(err.message);
-        else res.send(sales);
+        else {
+            sales.forEach(item => {
+                item._doc.name = item.user.firstname + " " + item.user.lastname;
+            });
+            res.send(sales)
+        };
     })
 };
 
