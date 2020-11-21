@@ -4,7 +4,8 @@ let Batch = require("../models/batch");
 exports.onlineOrders_post = async function (req, res) {
     let onlineOrder = new MedicineList({
         prescription: req.body.prescription,
-        customer: req.body.customerid
+        customer: req.body.customerid,
+        user: req.body.userid
     });
 
     onlineOrder.save(function (err, theMedicineList) {
@@ -22,7 +23,19 @@ exports.onlineOrders_post = async function (req, res) {
 };
 
 exports.onlineOrders_get = function (req, res) {
-    MedicineList.find({}).populate('customer', 'firstname').exec(function (err,medicineList) {
+    MedicineList.find({}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec(function (err,medicineList) {
+        if(err) {
+            res.status(500).json({
+                error: err.message
+            });
+        } else {
+            res.send(medicineList)
+        }
+    })
+};
+
+exports.onlineOrders_getByUser = function (req, res) {
+    MedicineList.find({user:req.params.id}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec(function (err,medicineList) {
         if(err) {
             res.status(500).json({
                 error: err.message

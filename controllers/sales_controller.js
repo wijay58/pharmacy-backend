@@ -72,6 +72,18 @@ exports.sales_get = function (req, res) {
     })
 };
 
+exports.sales_getByUser = function (req, res) {
+    Sales.find({user:req.params.id}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec( function (err, sales) {
+        if (err) return res.send(err.message);
+        else {
+            sales.forEach(item => {
+                item._doc.name = item.user.firstname + " " + item.user.lastname;
+            });
+            res.send(sales)
+        };
+    })
+};
+
 exports.sales_getToday = function (req, res) {
     var start = new Date();
     start.setHours(0, 0, 0, 0);

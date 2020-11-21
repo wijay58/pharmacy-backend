@@ -15,6 +15,11 @@ let MedicineListSchema = new Schema({
         ref: 'Customer',
         required: true
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     online_order_number: {
         type: mongoose.Schema.Types.Number
     },
