@@ -1,6 +1,7 @@
 let Batch = require("../models/batch");
 let Purchase = require("../models/purchase");
 let Medicine = require("../models/medicine");
+const { body,validationResult, check } = require("express-validator");
 
 exports.batch_post = async function (req, res) {
     let purchaseId;
@@ -11,7 +12,7 @@ exports.batch_post = async function (req, res) {
         bill_number: req.body.bill_number
     }, function (err, purchase) {
         if (err) {
-            res.status(500).json({
+            return res.status(500).json({
                 error: err.message
             });
         } else {
@@ -50,29 +51,42 @@ exports.batch_post = async function (req, res) {
             error: "Prices Dont Match"
         });
     }
-    let batch = new Batch({
-        medicine: medicineId,
-        purchase: purchaseId,
-        expiry_date: req.body.expiry_date,
-        bought_price: req.body.bought_price,
-        selling_price: req.body.selling_price,
-        remaining_quantity: req.body.remaining_quantity,
-        storage: req.body.storage,
-        initial_quantity: req.body.remaining_quantity
-    });
+    body('expiry_date', 'Expiry Date is required').isDate(); 
+    body('bill_number', 'Bill number is required').not().isEmpty(); 
+    body('name', 'Medicine name is required').not().isEmpty(); 
+    body('remaining_quantity', 'Remaining Quantity is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
+    body('storage', 'Storage is required').notEmpty();
+    body('bought_price', 'Bought Price is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
+    body('selling_price', 'Selling Price is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
 
-    batch.save(function (err, theBatch) {
-        if (err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            res.status(200).json({
-                message: 'Batch created successfully',
-                batch: theBatch
-            });
-        }
-    })
+    const errors = validationResult(req);
+    if (errors) {
+        return res.status(500).send(errors.errors)
+    } else {
+        let batch = new Batch({
+            medicine: medicineId,
+            purchase: purchaseId,
+            expiry_date: req.body.expiry_date,
+            bought_price: req.body.bought_price,
+            selling_price: req.body.selling_price,
+            remaining_quantity: req.body.remaining_quantity,
+            storage: req.body.storage,
+            initial_quantity: req.body.remaining_quantity
+        });
+    
+        batch.save(function (err, theBatch) {
+            if (err) {
+                return res.status(500).json({
+                    error: err.message
+                });
+            } else {
+                res.status(200).json({
+                    message: 'Batch created successfully',
+                    batch: theBatch
+                });
+            }
+        })
+    }
 };
 
 exports.batch_get = function (req, res) {
