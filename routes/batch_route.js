@@ -3,7 +3,7 @@ const router = express.Router();
 const batch_controller = require('../controllers/batch_controller.js');
 const checkAuth = require('../checkAuth.js');
 
-router.post('/post', checkAuth,batch_controller.batch_post);
+router.post('/post', checkAuth,batch_controller.validate('createUser'),batch_controller.batch_post);
 router.get('/get', checkAuth,batch_controller.batch_get);
 router.get('/batch_search/:searchText', checkAuth,batch_controller.batch_search);
 router.delete('/:id', checkAuth,batch_controller.batch_delete);

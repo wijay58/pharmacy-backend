@@ -3,90 +3,108 @@ let Purchase = require("../models/purchase");
 let Medicine = require("../models/medicine");
 const { body,validationResult, check } = require("express-validator");
 
-exports.batch_post = async function (req, res) {
-    let purchaseId;
-    let medicineId;
-    let sum = 0;
-    let PurchasePrice;
-    await Purchase.findOne({
-        bill_number: req.body.bill_number
-    }, function (err, purchase) {
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        } else {
-            purchaseId = purchase._doc._id;
-            PurchasePrice = purchase._doc.total;
-        }
-    });
-    await Medicine.findOne({
-        name: req.body.name
-    }, function (err, medicine) {
-        if (err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            medicineId = medicine._doc._id
-        }
-    });
-    await Batch.find({
-        purchase: purchaseId
-    }, function (err, batch) {
-        if (err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            batch.forEach(element => {
-                let thisSum = element._doc.initial_quantity * parseFloat(element._doc.bought_price)
-                sum += thisSum
-            });
-            sum += parseInt(req.body.remaining_quantity)* parseFloat(req.body.bought_price)
-        }
-    });
-    if(PurchasePrice<sum) {
-        return res.status(500).json({
-            error: "Prices Dont Match"
-        });
+exports.validate = (method) => {
+    switch (method) {
+      case 'createUser': {
+       return [ 
+            body('expiry_date', 'Expiry Date is required').isDate(),
+            body('bill_number', 'Bill number is required').not().isEmpty(), 
+            body('name', 'Medicine name is required').not().isEmpty(),
+            body('remaining_quantity', 'Remaining Quantity is required and it Should not be 0').isFloat({min:1}),
+            body('storage', 'Storage is required').notEmpty(),
+            body('bought_price', 'Bought Price is required and it Should not be 0').exists({options:{checkFalsy:false}}).isDecimal(),
+            body('selling_price', 'Selling Price is required and it Should not be 0').exists({options:{checkFalsy:false}}).isDecimal()
+        ]   
+      }
     }
-    body('expiry_date', 'Expiry Date is required').isDate(); 
-    body('bill_number', 'Bill number is required').not().isEmpty(); 
-    body('name', 'Medicine name is required').not().isEmpty(); 
-    body('remaining_quantity', 'Remaining Quantity is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
-    body('storage', 'Storage is required').notEmpty();
-    body('bought_price', 'Bought Price is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
-    body('selling_price', 'Selling Price is required and it Should not be 0').exists({options:{checkFalsy:true}}).isDecimal();
+  }
 
-    const errors = validationResult(req);
-    if (errors) {
-        return res.status(500).send(errors.errors)
-    } else {
-        let batch = new Batch({
-            medicine: medicineId,
-            purchase: purchaseId,
-            expiry_date: req.body.expiry_date,
-            bought_price: req.body.bought_price,
-            selling_price: req.body.selling_price,
-            remaining_quantity: req.body.remaining_quantity,
-            storage: req.body.storage,
-            initial_quantity: req.body.remaining_quantity
-        });
-    
-        batch.save(function (err, theBatch) {
+exports.batch_post = async function (req, res) {
+
+    try {
+        const errors = validationResult(req); // Finds the validation errors in this request and wraps them in an object with handy functions
+  
+        if (!errors.isEmpty()) {
+          return res.status(422).json({ errors: errors.array() });
+        }
+        let purchaseId;
+        let medicineId;
+        let sum = 0;
+        let PurchasePrice;
+        await Purchase.findOne({
+            bill_number: req.body.bill_number
+        }, function (err, purchase) {
             if (err) {
                 return res.status(500).json({
                     error: err.message
                 });
             } else {
-                res.status(200).json({
-                    message: 'Batch created successfully',
-                    batch: theBatch
-                });
+                purchaseId = purchase._doc._id;
+                PurchasePrice = purchase._doc.total;
             }
-        })
-    }
+        });
+        await Medicine.findOne({
+            name: req.body.name
+        }, function (err, medicine) {
+            if (err) {
+                res.status(500).json({
+                    error: err.message
+                });
+            } else {
+                medicineId = medicine._doc._id
+            }
+        });
+        await Batch.find({
+            purchase: purchaseId
+        }, function (err, batch) {
+            if (err) {
+                res.status(500).json({
+                    error: err.message
+                });
+            } else {
+                batch.forEach(element => {
+                    let thisSum = element._doc.initial_quantity * parseFloat(element._doc.bought_price)
+                    sum += thisSum
+                });
+                sum += parseInt(req.body.remaining_quantity)* parseFloat(req.body.bought_price)
+            }
+        });
+        if(PurchasePrice<sum) {
+            return res.status(500).json({
+                error: "Prices Dont Match"
+            });
+        }
+    
+            let batch = new Batch({
+                medicine: medicineId,
+                purchase: purchaseId,
+                expiry_date: req.body.expiry_date,
+                bought_price: req.body.bought_price,
+                selling_price: req.body.selling_price,
+                remaining_quantity: req.body.remaining_quantity,
+                storage: req.body.storage,
+                initial_quantity: req.body.remaining_quantity
+            });
+        
+            batch.save(function (err, theBatch) {
+                if (err) {
+                    return res.status(500).json({
+                        error: err.message
+                    });
+                } else {
+                    res.status(200).json({
+                        message: 'Batch created successfully',
+                        batch: theBatch
+                    });
+                }
+            })
+
+     } catch(err) {
+        return res.status(500).json({
+            error: err.message
+        });
+     }
+    
 };
 
 exports.batch_get = function (req, res) {
