@@ -4,7 +4,7 @@ const user_controller = require('../controllers/user_controller.js');
 const jwt = require('jsonwebtoken');
 const checkAuth = require('../checkAuth.js');
 
-router.post('/post', checkAuth,user_controller.user_post);
+router.post('/post', checkAuth,user_controller.validate(),user_controller.user_post);
 router.post('/login', user_controller.user_login);
 router.get('/checkauth/:token', function(req,res){
     try {
@@ -17,6 +17,6 @@ router.get('/checkauth/:token', function(req,res){
 });
 router.get('/get', checkAuth,user_controller.user_get);
 router.delete('/:id', checkAuth,user_controller.user_delete);
-router.put('/:id', checkAuth,user_controller.user_update);
+router.put('/:id', checkAuth,user_controller.validate(),user_controller.user_update);
 
 module.exports = router;
