@@ -6,6 +6,10 @@ let MedicineSchema = new Schema({
         type: mongoose.Schema.Types.String,
         required: true
     },
+    size: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
     generic_name: {
         type: mongoose.Schema.Types.String,
         required: true

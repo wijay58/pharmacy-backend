@@ -9,6 +9,7 @@ const {
 exports.validate = () => {
     return [
         body('generic_name', 'Generic name is required').not().isEmpty(),
+        body('size', 'Size is required').not().isEmpty(),
         body('category', 'Category is required').not().isEmpty(),
         body('unit', 'Unit is required').not().isEmpty(),
         body('name', 'Medicine name is required').not().isEmpty()
@@ -50,6 +51,7 @@ exports.medicine_post = async function (req, res) {
         });
         let medicine = new Medicine({
             name: req.body.name,
+            size: req.body.size,
             generic_name: req.body.generic_name,
             unit: unitid,
             category: categoryid

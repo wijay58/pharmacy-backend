@@ -77,7 +77,7 @@ exports.batch_post = async function (req, res) {
             }
         });
         if (PurchasePrice < sum) {
-            return res.status(500).json({
+            return res.status(501).json({
                 error: "Prices Dont Match"
             });
         }
