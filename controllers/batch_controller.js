@@ -145,7 +145,10 @@ exports.batch_search = async function (req, res) {
     let med = []
     let query = req.params.searchText ? req.params.searchText : "";
     await Medicine.find({
-        'name': new RegExp(query, 'i')
+        $or:[
+            {generic_name: new RegExp(query, 'i')},
+            {name: new RegExp(query, 'i')}
+        ]
     }, async (err, medicine) => {
         if (err) {
             return res.status(500).json({

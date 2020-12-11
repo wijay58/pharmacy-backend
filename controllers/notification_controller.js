@@ -1,7 +1,7 @@
 let Batch = require("../models/batch");
 
 exports.notification_get = async function (req, res) {
-    await Batch.find({"remaining_quantity":{$lt:50}}).populate({
+    await Batch.find({"remaining_quantity":{$lt:50,$gt:0}}).populate({
             path: 'purchase',
             select: ['supplier', 'bill_number'],
             populate: {
