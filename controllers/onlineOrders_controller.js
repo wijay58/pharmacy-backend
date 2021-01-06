@@ -5,7 +5,6 @@ exports.onlineOrders_post = async function (req, res) {
     let onlineOrder = new MedicineList({
         prescription: req.body.prescription,
         customer: req.body.customerid,
-        user: req.body.userid
     });
 
     onlineOrder.save(function (err, theMedicineList) {

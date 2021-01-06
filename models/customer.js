@@ -23,9 +23,6 @@ let CustomerSchema = new Schema({
         type: mongoose.Schema.Types.String,
         required: true
     },
-    type: {
-        type: mongoose.Schema.Types.String
-    },
     loyalty_points: {
         type: mongoose.Schema.Types.Number,
         default: 0
