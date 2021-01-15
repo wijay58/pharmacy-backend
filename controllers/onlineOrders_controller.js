@@ -1,10 +1,28 @@
 let MedicineList = require("../models/medicine_list");
 let Batch = require("../models/batch");
+const cloudinary = require("../cloudinary");
+const upload = require("../multer");
+
+exports.onlineOrders_postImage = async function (req, res, next) {
+    try {
+      // Upload image to cloudinary
+      const result = await cloudinary.uploader.upload(req.body.images.dataURL);
+       // Create new user
+      req.body.url = result.url
+      // Save user
+      next()
+    } catch (err) {
+      next(err);
+    }; 
+};
 
 exports.onlineOrders_post = async function (req, res) {
     let onlineOrder = new MedicineList({
-        prescription: req.body.prescription,
+        prescription: req.body.url,
         customer: req.body.customerid,
+        address: req.body.address,
+        city: req.body.city,
+        postalcode : req.body.postcode,
     });
 
     onlineOrder.save(function (err, theMedicineList) {

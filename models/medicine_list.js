@@ -18,7 +18,6 @@ let MedicineListSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     },
     online_order_number: {
         type: mongoose.Schema.Types.Number
@@ -32,7 +31,16 @@ let MedicineListSchema = new Schema({
         type: mongoose.Schema.Types.String,
         default:"1", //1-customerSent 2-reserved 3-paid 
         required: true
-    }
+    },
+    address: {
+        type: mongoose.Schema.Types.String
+    },
+    city: {
+        type: mongoose.Schema.Types.String
+    },
+    postalcode: {
+        type: mongoose.Schema.Types.String
+    },
 }, {
     timestamps: true
 })

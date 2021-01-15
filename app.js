@@ -21,6 +21,8 @@ const notificationRouter = require('./routes/notification_route');
 const onlineOrderRouter = require('./routes/onlineOrders_route');
 
 var app = express();
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 
 const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');

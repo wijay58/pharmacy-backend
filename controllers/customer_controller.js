@@ -61,12 +61,12 @@ exports.customer_post = async function (req, res) {
 exports.customer_login = async function (req, res) {
     await Customer.findOne({
         email: req.body.email
-    }, async function (err, user) {
-        if (!user) return res.status(404).send('No user found.');
+    }, async function (err, customer) {
+        if (!customer) return res.status(404).send('No user found.');
         try {
-            if (await bcrypt.compare(req.body.password, user.password)) {
+            if (await bcrypt.compare(req.body.password, customer.password)) {
                 let token = jwt.sign({
-                    id: user.id
+                    id: customer.id
                 }, process.env.SECRET, {
                     expiresIn: 86400 // expires in 24 hours
                 });
@@ -74,7 +74,7 @@ exports.customer_login = async function (req, res) {
                 res.status(200).send({
                     auth: true,
                     token: token,
-                    user: user
+                    customer: customer
                 });
             } else {
                 return res.status(401).send(
