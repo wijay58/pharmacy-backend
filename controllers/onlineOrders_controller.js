@@ -63,11 +63,15 @@ exports.onlineOrders_getByUser = function (req, res) {
     })
 };
 
-exports.onlineOrders_delete = function (req, res) {
-    MedicineList.findByIdAndRemove(req.params.id, function (err) {
+exports.onlineOrders_reject = function (req, res) {
+    req.body.stage = "4"
+    req.body.remark = req.body.message
+    MedicineList.findByIdAndUpdate(req.params.id, {
+        $set: req.body
+    }, function (err, medicineList) {
         if (err) return res.send(err.message);
-        res.send('Deleted successfully!');
-    })
+        else res.send(medicineList);
+    });
 };
 
 exports.onlineOrders_cashier_update = async function (req, res) {
