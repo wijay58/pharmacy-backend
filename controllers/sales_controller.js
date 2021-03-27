@@ -37,7 +37,8 @@ exports.sales_post_online_success = async function (req, res) {
     let sales = new Sales({
         customer: req.body.customerId,
         items: req.body.items,
-        total: req.body.total
+        total: req.body.total,
+        user: req.body.userid
     });
 
     await MedicineList.findByIdAndUpdate(req.body._id, {
@@ -64,9 +65,11 @@ exports.sales_get = function (req, res) {
     Sales.find({}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec( function (err, sales) {
         if (err) return res.send(err.message);
         else {
-            sales.forEach(item => {
-                item._doc.name = item.user.firstname + " " + item.user.lastname;
-            });
+            if(sales.length > 0) {
+                sales.forEach(item => {
+                    item._doc.name = item.user.firstname + " " + item.user.lastname;
+                });
+            }
             res.send(sales)
         };
     })
