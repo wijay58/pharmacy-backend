@@ -20,6 +20,7 @@ exports.onlineOrders_post = async function (req, res) {
     let onlineOrder = new MedicineList({
         prescription: req.body.url,
         customer: req.body.customerid,
+        customer_order_notes: req.body.notes,
         address: req.body.address,
         city: req.body.city,
         postalcode : req.body.postcode,

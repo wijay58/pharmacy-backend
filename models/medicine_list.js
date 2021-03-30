@@ -30,6 +30,9 @@ let MedicineListSchema = new Schema({
     remark: {
         type: mongoose.Schema.Types.String,
     },
+    customer_order_notes: {
+        type: mongoose.Schema.Types.String,
+    },
     stage: {
         type: mongoose.Schema.Types.String,
         default:"1", //1-customerSent 2-reserved 3-paid 4-rejected
