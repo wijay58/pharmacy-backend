@@ -2,6 +2,25 @@ let MedicineList = require("../models/medicine_list");
 let Batch = require("../models/batch");
 const cloudinary = require("../cloudinary");
 const upload = require("../multer");
+const nodemailer = require('nodemailer');
+
+sendMail = async function(mailOptions,req,res) {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASS
+        }
+    })
+
+    transporter.sendMail(mailOptions,function(err,data){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Email sent successfully.')
+        }
+    })
+} 
 
 exports.onlineOrders_postImage = async function (req, res, next) {
     try {
@@ -64,14 +83,22 @@ exports.onlineOrders_getByUser = function (req, res) {
     })
 };
 
-exports.onlineOrders_reject = function (req, res) {
+exports.onlineOrders_reject = async function (req, res) {
     req.body.stage = "4"
     req.body.remark = req.body.message
-    MedicineList.findByIdAndUpdate(req.params.id, {
-        $set: req.body
-    }, function (err, medicineList) {
+    await MedicineList.findOneAndUpdate({_id: req.params.id},{$set: req.body},{upsert: true})
+    .populate('customer')
+    .exec(function (err, medicineList) {
         if (err) return res.send(err.message);
-        else res.send(medicineList);
+        else {
+            let mailOptions = {
+            from: process.env.EMAIL,
+            to: medicineList._doc.customer._doc.email,
+            subject: 'Your Order is rejected.',
+            text: "Templating should be done"
+            }
+            sendMail(mailOptions,req,res);
+        };
     });
 };
 
