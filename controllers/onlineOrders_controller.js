@@ -3,8 +3,11 @@ let Batch = require("../models/batch");
 const cloudinary = require("../cloudinary");
 const upload = require("../multer");
 const nodemailer = require('nodemailer');
+const hbs = require('handlebars');
+const path = require('path');
+const fs = require('fs')
 
-sendMail = async function(mailOptions,req,res) {
+sendMail = async function(parameters,req,res) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -13,11 +16,28 @@ sendMail = async function(mailOptions,req,res) {
         }
     })
 
+    let source = fs.readFileSync(path.join(__dirname, parameters.template), 'utf8')
+    let template = hbs.compile(source);
+    let variables = {
+        firstname: parameters.firstname,
+        reason: parameters.reason
+    }
+    let mailOptions = {
+        from: process.env.EMAIL,
+        to: parameters.email,
+        subject: parameters.subject,
+        html: template(variables)
+    }
+
     transporter.sendMail(mailOptions,function(err,data){
         if(err) {
-            console.log(err);
+            res.status(500).json({
+                error: err.message
+            });
         } else {
-            console.log('Email sent successfully.')
+            res.status(200).json({
+                message: "Email sent successfully."
+            });
         }
     })
 } 
@@ -91,13 +111,16 @@ exports.onlineOrders_reject = async function (req, res) {
     .exec(function (err, medicineList) {
         if (err) return res.send(err.message);
         else {
-            let mailOptions = {
+            let template = "../views/orderReject.handlebars";
+            let Mailparameters = {
             from: process.env.EMAIL,
-            to: medicineList._doc.customer._doc.email,
+            template: template,
+            email: medicineList._doc.customer._doc.email,
+            firstname: medicineList._doc.customer._doc.firstname,
+            reason: req.body.remark,
             subject: 'Your Order is rejected.',
-            text: "Templating should be done"
             }
-            sendMail(mailOptions,req,res);
+            sendMail(Mailparameters,req,res);
         };
     });
 };
