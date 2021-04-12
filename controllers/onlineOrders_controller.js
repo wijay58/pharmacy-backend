@@ -91,6 +91,18 @@ exports.onlineOrders_get = function (req, res) {
     })
 };
 
+exports.onlineOrders_getByOrderNumber = function (req, res) {
+    MedicineList.findOne({online_order_number: req.params.id}).populate({path:'customer',select:['firstname','lastname','email','phone']}).populate({path:'user',select:['firstname','lastname']}).exec(function (err,medicineList) {
+        if(err) {
+            res.status(500).json({
+                error: err.message
+            });
+        } else {
+            res.send(medicineList)
+        }
+    })
+};
+
 exports.onlineOrders_getByUser = function (req, res) {
     MedicineList.find({user:req.params.id}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec(function (err,medicineList) {
         if(err) {
