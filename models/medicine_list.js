@@ -39,10 +39,12 @@ let MedicineListSchema = new Schema({
         required: true
     },
     address: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     city: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
     postalcode: {
         type: mongoose.Schema.Types.String

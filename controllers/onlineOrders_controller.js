@@ -6,6 +6,23 @@ const nodemailer = require('nodemailer');
 const hbs = require('handlebars');
 const path = require('path');
 const fs = require('fs')
+const {
+    body,
+    validationResult
+} = require("express-validator");
+
+exports.validate = () => {
+    return [
+        body('url', 'Url is required').not().isEmpty(),
+        body('customerid', 'Customer id is required').not().isEmpty(),
+        body('address', 'Address is required and should have at least 5 characters').not().isEmpty().isLength({
+            min: 5
+        }),
+        body('city', 'City is required and should have at least 2 characters').not().isEmpty().isLength({
+            min: 2
+        })
+    ]
+}
 
 sendMail = async function(parameters,req,res) {
     let transporter = nodemailer.createTransport({
