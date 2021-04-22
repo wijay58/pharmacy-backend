@@ -24,6 +24,12 @@ let RecieptSchema = new Schema({
         type: mongoose.Schema.Types.Number,
         required: true
     },
+    //cash or card
+    method: {
+        type: mongoose.Schema.Types.String,
+        default:"Card",
+        required: true
+    },
     items: {
         type: Array,
         required: true
@@ -31,6 +37,7 @@ let RecieptSchema = new Schema({
 }, {
     timestamps: true
 })
+
 
 RecieptSchema.plugin(autoIncrement.plugin, { model: 'Reciept', field: 'invoice_number' });
 module.exports = mongoose.model('Reciept', RecieptSchema);

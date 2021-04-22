@@ -5,7 +5,7 @@ const upload = require("../multer");
 const nodemailer = require('nodemailer');
 const hbs = require('handlebars');
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 const {
     body,
     validationResult

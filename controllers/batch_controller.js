@@ -51,7 +51,7 @@ exports.batch_post = async function (req, res) {
             }
         });
         await Medicine.findOne({
-            name: req.body.name
+            name: req.body.name,size: req.body.size
         }, function (err, medicine) {
             if (err) {
                 res.status(500).json({

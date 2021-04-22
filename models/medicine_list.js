@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 let MedicineListSchema = new Schema({
     list: {
-        type: mongoose.Schema.Types.Array
+        type: Array
     },
     total: {
         type: mongoose.Schema.Types.Number
