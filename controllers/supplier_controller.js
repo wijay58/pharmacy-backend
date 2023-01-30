@@ -8,8 +8,8 @@ exports.validate = () => {
     return [
         body('name', 'Supplier name is required').not().isEmpty(),
         body('phone', 'Phone number is required').not().isEmpty(),
-        body('email', 'Email is required and should be valid').not().isEmpty().normalizeEmail().isEmail(),
-        body('amount_to_be_paid', 'Amount is required').not().isEmpty().isFloat()
+        body('phone', 'Phone number should be valid').isMobilePhone(),
+        body('email', 'Email is required and should be valid').not().isEmpty().normalizeEmail().isEmail()
     ]
 }
 

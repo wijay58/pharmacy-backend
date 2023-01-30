@@ -96,8 +96,11 @@ exports.onlineOrders_post = async function (req, res) {
     })
 };
 
-exports.onlineOrders_get = function (req, res) {
-    MedicineList.find({}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec(function (err,medicineList) {
+exports.onlineOrders_get = function (req,res) {
+    MedicineList.find({})
+    .populate({path:'customer',select:['firstname','lastname']})
+    .populate({path:'user',select:['firstname','lastname']})
+    .exec(function (err,medicineList) {
         if(err) {
             res.status(500).json({
                 error: err.message

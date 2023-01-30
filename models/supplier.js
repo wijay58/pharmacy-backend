@@ -17,7 +17,8 @@ let SupplierSchema = new Schema({
         required: true
     },
     amount_to_be_paid: {
-        type: mongoose.Schema.Types.Number
+        type: mongoose.Schema.Types.Number,
+        default: 0
     }
 }, {
     timestamps: true
