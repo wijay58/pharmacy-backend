@@ -3,7 +3,7 @@ var autoIncrement = require('mongoose-auto-increment');
 const User = require('../models/user');
 var bcrypt = require('bcryptjs');
 
-var mongoDB = `mongodb://localhost:27017/pharmacy?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false`;
+var mongoDB = process.env.DB_URL;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
   console.log('Database connection successful');
