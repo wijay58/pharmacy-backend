@@ -112,13 +112,20 @@ exports.sales_post_online_success = async function (req, res) {
         }
     })
 };
+
 exports.sales_get = function (req, res) {
-    Sales.find({}).populate({path:'customer',select:['firstname','lastname']}).populate({path:'user',select:['firstname','lastname']}).exec( function (err, sales) {
+    Sales.find({})
+    .populate({path:'user',select:['firstname','lastname']})
+    .populate({path: 'customer',select: ['firstname', 'lastname']})
+    .exec( function (err, sales) {
         if (err) return res.send(err.message);
         else {
             if(sales.length > 0) {
                 sales.forEach(item => {
+                  if(item.user)
                     item._doc.name = item.user.firstname + " " + item.user.lastname;
+                  else 
+                    item._doc.name = null
                 });
             }
             res.send(sales)
